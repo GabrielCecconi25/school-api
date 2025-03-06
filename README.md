@@ -1,7 +1,7 @@
-# 📌 Projeto API de Professores
+# 📌 Projeto API de Escola
 
 ## 📖 Sobre o Projeto
-Esta API foi desenvolvida utilizando **Flask** e **SQLAlchemy** para gerenciar professores. O sistema permite a criação, leitura, atualização e remoção de professores no banco de dados.
+Esta API foi desenvolvida utilizando **Flask** e **SQLAlchemy** para gerenciar escola. O sistema permite a criação, leitura, atualização e remoção de professores, turmas e alunos  no banco de dados.
 
 ## 🛠️ Tecnologias Utilizadas
 - Python 🐍
@@ -13,7 +13,7 @@ Esta API foi desenvolvida utilizando **Flask** e **SQLAlchemy** para gerenciar p
 ## 🚀 Como Executar o Projeto
 ### 1️⃣ Clonar o Repositório
 ```bash
-git clone https://github.com/seu-usuario/nome-do-repo.git
+git clone https://github.com/GabrielCecconi25/school-api.git
 cd nome-do-repo
 ```
 
