@@ -1,4 +1,3 @@
-# routes/professores.py
 from flask import Blueprint, request, jsonify
 
 from models.professor import Professor
