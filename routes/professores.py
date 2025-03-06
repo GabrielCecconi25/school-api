@@ -19,9 +19,12 @@ def get_professores():
       500:
         description: Erro de servidor
     """
-    professores = Professor.query.all()
-    return jsonify([professor.serialize() for professor in professores]), 200
-
+    try:
+      professores = Professor.query.all()
+      return jsonify([professor.serialize() for professor in professores]), 200
+    except Exception as e:
+      db.session.rollback()
+      return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
 
 ##### GET by ID #####
 @appProfessor.route('/professores/<int:id>', methods=['GET'])
@@ -37,19 +40,23 @@ def get_professor(id):
         required: true
         description: ID do professor
     repsonses:
-        200:
-            description: Professor encontrado
-        404:
-            description: Professor não encontrado
-        500:
-            description: Erro de servidor
+      200:
+        description: Professor encontrado
+      404:
+        description: Professor não encontrado
+      500:
+        description: Erro de servidor
     """
     # Verificar professor
     if not db.session.query(Professor.id).filter_by(id=id).scalar():
         return jsonify({'message': 'Professor não encontrado!'}), 404
 
-    professor = Professor.query.filter(Professor.id == id).first()
-    return jsonify(professor.serialize()), 200
+    try:
+      professor = Professor.query.filter(Professor.id == id).first()
+      return jsonify(professor.serialize()), 200
+    except Exception as e:
+      db.session.rollback()
+      return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
 
 ##### POST #####
 @appProfessor.route('/professores', methods=['POST'])
@@ -98,10 +105,14 @@ def post_professor():
         observacoes=data.get('observacoes', '')
     )
 
-    # Adiciona o professor ao banco de dados
-    db.session.add(novo_professor)
-    db.session.commit()
-    return jsonify({'message': 'Professor criado com sucesso!'}), 201
+    try:
+      # Adiciona o professor ao banco de dados
+      db.session.add(novo_professor)
+      db.session.commit()
+      return jsonify({'message': 'Professor criado com sucesso!'}), 201
+    except Exception as e:
+      db.session.rollback()
+      return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
 
 ##### PUT #####
 @appProfessor.route('/professores/<int:id>', methods=['PUT'])
@@ -135,40 +146,41 @@ def put_professor(id):
               type: string
               example: "Professor atualizado com novas especialidades"
     responses:
-        200:
-            description: Professor atualizado
-        400:
-            description: Erro ao criar professor
-        404:
-            description: Professor não encontrado
-        500:
-            description: Erro de servidor
+      200:
+        description: Professor atualizado
+      400:
+        description: Erro ao criar professor
+      404:
+        description: Professor não encontrado
+      500:
+        description: Erro de servidor
     """
     data = request.get_json()
 
     # Verificar dados enviados
     if not data:
-        return jsonify({'message': 'Dados inválidos!'}), 400
+      return jsonify({'message': 'Dados inválidos!'}), 400
     # Verificar professor
     if not db.session.query(Professor.id).filter_by(id=id).scalar():
-        return jsonify({'message': 'Professor não encontrado!'}), 404
+      return jsonify({'message': 'Professor não encontrado!'}), 404
     
     professor = Professor.query.get(id)
 
     if 'nome' in data:
-        professor.nome = data['nome']
+      professor.nome = data['nome']
     if 'idade' in data:
-        professor.idade = data['idade']
+      professor.idade = data['idade']
     if 'materia' in data:
-        professor.materia = data['materia']
+      professor.materia = data['materia']
     if 'observacoes' in data:
-        professor.observacoes = data['observacoes']
-    
-    # Atualiza professor no banco de dados
-    db.session.commit()
-
-    return jsonify({'message': 'Professor atualizado com sucesso!'}), 200
-
+      professor.observacoes = data['observacoes']
+    try:
+      # Atualiza professor no banco de dados
+      db.session.commit()
+      return jsonify({'message': 'Professor atualizado com sucesso!'}), 200
+    except Exception as e:
+      db.session.rollback()
+      return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
 
 ##### DELETE #####
 @appProfessor.route('/professores/<int:id>', methods=['DELETE'])
@@ -184,19 +196,21 @@ def delete_professor(id):
         required: true
         description: ID do professor
     responses:
-        200:
-            description: Professor deletado
-        404:
-            description: Professor não encontrado
-        500:
-            description: Erro de servidor
+      200:
+        description: Professor deletado
+      404:
+        description: Professor não encontrado
+      500:
+        description: Erro de servidor
     """
     # Verificar professor
     if not db.session.query(Professor.id).filter_by(id=id).scalar():
-        return jsonify({'message': 'Professor não encontrado!'}), 404
+      return jsonify({'message': 'Professor não encontrado!'}), 404
     
-    professor = Professor.query.get(id)
-
-    db.session.delete(professor)
-    db.session.commit()
-    return jsonify({'message': 'Professor Deletado com sucesso!'}), 200
+    try:
+      db.session.delete(professor)
+      db.session.commit()
+      return jsonify({'message': 'Professor Deletado com sucesso!'}), 200
+    except Exception as e:
+      db.session.rollback()
+      return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
