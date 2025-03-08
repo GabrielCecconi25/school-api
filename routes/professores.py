@@ -14,7 +14,7 @@ def get_professores():
       - Professores
     responses:
       200:
-      d  description: Lista de professores
+        description: Lista de professores
       500:
         description: Erro de servidor
     """
