@@ -14,7 +14,7 @@ def get_professores():
       - Professores
     responses:
       200:
-        description: Lista de professores
+      d  description: Lista de professores
       500:
         description: Erro de servidor
     """
@@ -206,6 +206,8 @@ def delete_professor(id):
     if not db.session.query(Professor.id).filter_by(id=id).scalar():
       return jsonify({'message': 'Professor não encontrado!'}), 404
     
+    professor = Professor.query.get(id)
+
     try:
       db.session.delete(professor)
       db.session.commit()
