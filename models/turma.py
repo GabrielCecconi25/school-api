@@ -5,10 +5,10 @@ class Turma(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     descricao = db.Column(db.String(100), nullable=False)
     ativo = db.Column(db.Boolean, nullable=False)
-    professor_id = db.Coloum(db.Integer, db.ForeignKey('professor.id'))
+    professor_id = db.Column(db.Integer, db.ForeignKey('professor.id'), nullable=True)
 
     # Relacionamento
-    professor = db.relationship('Professor', backref='turmas', nullable=True)
+    professor = db.relationship('Professor', backref='turmas')
 
     def serialize(self):
         return {
