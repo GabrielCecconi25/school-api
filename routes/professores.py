@@ -47,15 +47,14 @@ def get_professor(id):
         description: Erro de servidor
     """
     # Verificar professor
-    if not db.session.query(Professor.id).filter_by(id=id).scalar():
+    professor = Professor.query.get(id)
+    if not professor:
         return jsonify({'message': 'Professor não encontrado!'}), 404
-
     try:
-      professor = Professor.query.filter(Professor.id == id).first()
       return jsonify(professor.serialize()), 200
     except Exception as e:
-      db.session.rollback()
-      return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
+        db.session.rollback()
+        return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
 
 ##### POST #####
 @appProfessor.route('/professores', methods=['POST'])
@@ -105,13 +104,13 @@ def post_professor():
     )
 
     try:
-      # Adiciona o professor ao banco de dados
-      db.session.add(novo_professor)
-      db.session.commit()
-      return jsonify({'message': 'Professor criado com sucesso!'}), 201
+        # Adiciona o professor ao banco de dados
+        db.session.add(novo_professor)
+        db.session.commit()
+        return jsonify({'message': 'Professor criado com sucesso!'}), 201
     except Exception as e:
-      db.session.rollback()
-      return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
+        db.session.rollback()
+        return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
 
 ##### PUT #####
 @appProfessor.route('/professores/<int:id>', methods=['PUT'])
