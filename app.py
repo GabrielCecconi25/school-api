@@ -31,6 +31,6 @@ with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
-    app.run(debug=False, port=5000)
+    app.run(port=5000, debug=True)
     # port = int(os.environ.get('PORT', 5000))
     # debug_mode = os.environ.get('FLASK_ENV', 'production') == 'development'
