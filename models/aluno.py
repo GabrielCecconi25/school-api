@@ -18,7 +18,7 @@ class Aluno(db.Model):
             'id': self.id,
             'nome': self.nome,
             'idade': self.idade,
-            'data_nascimento': self.data_nascimento,
+            'data_nascimento': self.data_nascimento.strftime('%Y-%m-%d') if self.data_nascimento else None,
             'nota_primeiro_semestre': self.nota_primeiro_semestre,
             'nota_segundo_semestre': self.nota_segundo_semestre,
             'media_final': self.media_final,
