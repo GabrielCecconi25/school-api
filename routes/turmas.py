@@ -92,19 +92,18 @@ def post_turmas():
         return jsonify({'message': 'Dados invalidos!'}), 400
     
     # Verifica se o professor existe
-    professor_id = data.get('professor_id')
-    if professor_id:
-      if not db.session.query(Professor.id).filter_by(id=professor_id).scalar():
-        return jsonify({'message': 'Professor não encontrado!'}), 404
-
-    # Cria uma nova Turma
-    nova_turma = Turma(
-        descricao=data['descricao'],
-        ativo=data['ativo'],
-        professor_id=professor_id
-    )
-
+    if 'professor_id' in data:
+        if not db.session.query(Professor.id).filter_by(id=data['professor_id']).scalar():
+            return jsonify({'message': 'Professor não encontrado!'}), 404
+    
     try:
+        # Cria uma nova Turma
+        nova_turma = Turma(
+            descricao=data['descricao'],
+            ativo=data['ativo'],
+            professor_id=data.get('professor_id')
+        )
+    
         # Adiciona a Turma no banco de Dados
         db.session.add(nova_turma)
         db.session.commit()
@@ -160,17 +159,17 @@ def put_turma(id):
     if not turma:
         return jsonify({'message': 'Turma não encontrada!'}), 404
     
-    if 'descricao' in data:
-        turma.descricao = data['descricao']
-    if 'ativo' in data:
-        turma.ativo = data['ativo']
     if 'professor_id' in data:
         if not db.session.query(Professor.id).filter_by(id=data['professor_id']).scalar():
             return jsonify({'message': 'Professor não encontrado!'}), 404
         turma.professor_id = data['professor_id']
+    if 'descricao' in data:
+        turma.descricao = data['descricao']
+    if 'ativo' in data:
+        turma.ativo = data['ativo']
     
     try:
-        # Atualiza a Turma no banco de Dados
+        # Atualiza a Turma no Banco de Dados
         db.session.commit()
         return jsonify({'message': 'Turma atualizada com Sucesso!'}), 200
     except Exception as e:
