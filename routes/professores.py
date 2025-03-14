@@ -46,11 +46,12 @@ def get_professor(id):
       500:
         description: Erro de servidor
     """
-    # Verificar professor
-    professor = Professor.query.get(id)
-    if not professor:
-        return jsonify({'message': 'Professor não encontrado!'}), 404
     try:
+      # Verificar professor
+      professor = Professor.query.get(id)
+      if not professor:
+        return jsonify({'message': 'Professor não encontrado!'}), 404
+    
       return jsonify(professor.serialize()), 200
     except Exception as e:
         db.session.rollback()
@@ -92,18 +93,18 @@ def post_professor():
     """
     data = request.get_json()
     # Verifica se os dados foram enviados corretamente
-    if not data or 'nome' not in data or 'idade' not in data or 'materia' not in data:
+    if not data or 'nome' not in data or 'idade' not in data or 'materia' not in data or 'observacoes' not in data:
         return jsonify({'message': 'Dados inválidos!'}), 400
         
-    # Cria um novo professor
-    novo_professor = Professor(
-        nome=data['nome'],
-        idade=data['idade'],
-        materia=data['materia'],
-        observacoes=data.get('observacoes', '')
-    )
-
     try:
+        # Cria um novo professor
+        novo_professor = Professor(
+            nome=data['nome'],
+            idade=data['idade'],
+            materia=data['materia'],
+            observacoes=data['observacoes']
+        )
+
         # Adiciona o professor ao banco de dados
         db.session.add(novo_professor)
         db.session.commit()
