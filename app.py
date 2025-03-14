@@ -21,9 +21,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 # Importação de rotas
-from routes import professores, turmas
+from routes import professores, turmas, alunos
 app.register_blueprint(professores.appProfessor)
 app.register_blueprint(turmas.appTurma)
+app.register_blueprint(alunos.appAluno)
 
 # Criação das tabelas
 with app.app_context():
@@ -31,5 +32,5 @@ with app.app_context():
 
 if __name__ == '__main__':
     app.run(debug=False, port=5000)
-    # port = int(os.environ.get('PORT', 5000)) 
+    # port = int(os.environ.get('PORT', 5000))
     # debug_mode = os.environ.get('FLASK_ENV', 'production') == 'development'
