@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from models.aluno import Aluno
+from models.turma import Turma
 from database import db
 
 appAluno = Blueprint('appAluno', __name__)
@@ -94,6 +95,36 @@ def post_aluno():
         description: Aluno criado
       400:
         description: Erro de validação
+      404:
+        description: Truma não encontrada
       500:
         description: Erro de servidor
     """
+    data = request.get_json()
+    
+    if not data or 'nome' not in data or 'idade' not in data or 'data_nascimento' not in data:
+        return jsonify({'message': 'Dados inválidos'}), 400
+    
+    if 'turma_id' in data:
+        turma = Turma.query.get(data['turma_id'])
+        if not turma:
+            return jsonify({'message': 'Turma não encontrada'}), 404
+    
+    try:
+        # Cria um novo aluno
+        novo_aluno = Aluno(
+            nome=data[data],
+            idade=data['idade'],
+            data_nascimento=data['data_nascimento'],
+            nota_primeiro_semestre=data['nota_primeiro_semestre'],
+            nota_segundo_semestre=data['nota_segundo_semestre'],
+            turma_id=data['turma_id']
+        )
+
+        # Adiciona aluno ao banco de dados
+        db.session.add(novo_aluno)
+        db.session.commit()
+        return jsonify({'message': 'Aluno criado com sucesso!'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Erro de servidor', 'erro': str(e)}), 500
